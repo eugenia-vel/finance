@@ -52,21 +52,25 @@ def get_chosen_categories():
             categories.append(val)
     return categories
 
-def get_statistics(frame):
-    canvas = Canvas(bg="white", width=250, height=200)
+def get_statistics():
+    canvas = Canvas(bg="white", width=350, height=300)
     canvas.grid()
+    canvas.create_oval(25, 10, 45, 30, fill="blue")
+    canvas.create_text(50, 40, text=("Осталось"))
+    canvas.create_oval(205, 10, 225, 30, fill="red")
+    canvas.create_text(200, 40, text=("Потрачено"))
     for i in range(len(get_chosen_categories())):
         wb = load_workbook("document.xlsx")
         ws = wb.active
+        canvas.create_text(50,70+30*i, text=(ws.cell(row=i+3, column=1).value))
         wasted = ws.cell(row=i+3, column=3).value
         left = ws.cell(row=i+3, column=2).value
         left_percent = left/(wasted + left)
-        print(left_percent)
-        Label(frame, text="Осталось").grid(row=i+1, column=0)
-        Label(frame, text=str(left)).grid(row=i+1, column=1)
-        Label(frame, text="Потрачено").grid(row=i+1, column=2)
-        Label(frame, text=str(wasted)).grid(row=i+1, column=3)
-        canvas.create_rectangle(25, 20+30*i, 25+200*left_percent, 40+30*i, fill="blue")
+        canvas.create_rectangle(100, 60+30*i, 100+200*left_percent, 80+30*i, fill="blue")
+        if left_percent > 0.1:
+            canvas.create_text(100+100*left_percent, 70+30*i, text=(str(left)))
         # rect_center_x = 
-        canvas.create_text(50, 100, text=("Осталось: "+str(left)))
-        canvas.create_rectangle(25+200*left_percent, 20+30*i, 225, 40+30*i, fill="red")
+        canvas.create_rectangle(100+200*left_percent, 60+30*i, 325, 80+30*i, fill="red")
+        if left_percent < 0.9:
+           canvas.create_text(225+100*left_percent, 70+30*i, text=(str(wasted)))
+    return canvas

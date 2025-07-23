@@ -27,15 +27,14 @@ if ws.cell(1,1).value==None:
         entry.grid(row=row_num, column=1)
         entries.append(entry)
         row_num += 1
-        # ttk.Label(textvariable=temp[len(temp)-1]).pack()
     btn = ttk.Button(frame1, text="Продолжить", command=lambda: enter_categories(temp, categories, entries, frame1))
     btn.grid(row=row_num, column=0)
     row_num += 1
 else:
-    frame1 = Frame(root, background='pink')
-    frame1.grid()
-    get_statistics(frame1)
-    Label(frame1, text="Rfeirihuvuo").grid(row=0, column=0)
-    btn = ttk.Button(frame1, text="Добавить новый расход")
-    btn.grid()
+    canvas = get_statistics()
+    # frame1 = Frame(root, background='pink')
+    # frame1.grid()
+    # Label(frame1, text="Rfeirihuvuo").grid(row=0, column=0)
+    # btn = ttk.Button(canvas, text="Добавить новый расход")
+    # btn.grid()
 root.mainloop()

@@ -31,10 +31,12 @@ if ws.cell(1,1).value==None:
     btn.grid(row=row_num, column=0)
     row_num += 1
 else:
-    canvas = get_statistics()
-    # frame1 = Frame(root, background='pink')
-    # frame1.grid()
+    get_statistics()
+    frame1 = Frame(root, background='pink')
+    frame1.grid()
     # Label(frame1, text="Rfeirihuvuo").grid(row=0, column=0)
-    # btn = ttk.Button(canvas, text="Добавить новый расход")
-    # btn.grid()
+    btn = ttk.Button(frame1, text="Добавить новый расход", command=lambda: add_new_expence(root))
+    btn.grid()
+    btn = ttk.Button(frame1, text="Изменить лимиты по расходам")
+    btn.grid()
 root.mainloop()

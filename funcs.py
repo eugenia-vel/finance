@@ -20,7 +20,7 @@ def enter_categories(temp, categories, values, frame):
     ws = wb.active
     i = 1
     for el in range (len(temp)):
-        print(categories[el], temp[el].get(), values[el].get())
+        # print(categories[el], temp[el].get(), values[el].get())
         if temp[el].get() == 1:
             ws.cell(1, i, value=categories[el])
             val = values[el].get()
@@ -40,6 +40,7 @@ def get_all_categories():
 
 def get_chosen_categories():
     categories = []
+    values = []
     wb = load_workbook("categories.xlsx")
     ws = wb.active
     i = 1
@@ -50,7 +51,8 @@ def get_chosen_categories():
             break
         else:
             categories.append(val)
-    return categories
+            values.append(ws.cell(row=2, column=i-1).value)
+    return [categories, values]
 
 def get_statistics():
     canvas = Canvas(bg="white", width=350, height=300)
@@ -59,7 +61,7 @@ def get_statistics():
     canvas.create_text(50, 40, text=("Осталось"))
     canvas.create_oval(205, 10, 225, 30, fill="red")
     canvas.create_text(200, 40, text=("Потрачено"))
-    for i in range(len(get_chosen_categories())):
+    for i in range(len(get_chosen_categories()[0])):
         wb = load_workbook("document.xlsx")
         ws = wb.active
         canvas.create_text(50,70+30*i, text=(ws.cell(row=i+3, column=1).value))
@@ -73,4 +75,18 @@ def get_statistics():
         canvas.create_rectangle(100+200*left_percent, 60+30*i, 325, 80+30*i, fill="red")
         if left_percent < 0.9:
            canvas.create_text(225+100*left_percent, 70+30*i, text=(str(wasted)))
-    return canvas
+
+def add_new_expence(root):
+    frame = Frame(root,background='pink', width=400, height=400)
+    frame.grid(row=0, column=0, rowspan=2)
+    frame.grid_propagate(0)
+    [all_categories, all_values] = get_chosen_categories()
+    print(all_values)
+    for i in range(len(all_categories)):
+        label = Label(frame, text=all_categories[i])
+        label.grid(row=i, column=0)
+        entry = Entry(frame, )
+        entry.insert(index=0, string=all_values[i])
+        entry.grid(row=i, column=1)
+    btn = Button(frame, text="Подтвердить")
+    btn.grid(columnspan=2)

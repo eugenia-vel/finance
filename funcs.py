@@ -2,6 +2,11 @@ from datetime import date, timedelta
 from openpyxl import load_workbook
 from tkinter import *
 
+wb = load_workbook("categories.xlsx")
+finance_plan = wb.active
+wb = load_workbook("document.xlsx")
+finance_fact = wb.active
+
 def get_zero(num):
     if num < 10:
         result = '0' + str(num)
@@ -76,17 +81,22 @@ def get_statistics():
         if left_percent < 0.9:
            canvas.create_text(225+100*left_percent, 70+30*i, text=(str(wasted)))
 
-def add_new_expence(root):
+def change_expences_plan(root):
+    def change_vals(entries):
+        for i in range(len(entries)):
+            print(entries[i].get())
     frame = Frame(root,background='pink', width=400, height=400)
     frame.grid(row=0, column=0, rowspan=2)
     frame.grid_propagate(0)
     [all_categories, all_values] = get_chosen_categories()
-    print(all_values)
+    # print(all_values)
+    entries = []
     for i in range(len(all_categories)):
         label = Label(frame, text=all_categories[i])
         label.grid(row=i, column=0)
-        entry = Entry(frame, )
+        entry = Entry(frame)
         entry.insert(index=0, string=all_values[i])
+        entries.append(entry)
         entry.grid(row=i, column=1)
-    btn = Button(frame, text="Подтвердить")
+    btn = Button(frame, text="Подтвердить", command= lambda: change_vals(entries))
     btn.grid(columnspan=2)

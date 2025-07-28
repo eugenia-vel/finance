@@ -2,10 +2,20 @@ from datetime import date, timedelta
 from openpyxl import load_workbook
 from tkinter import *
 
-wb = load_workbook("categories.xlsx")
-finance_plan = wb.active
-wb = load_workbook("document.xlsx")
-finance_fact = wb.active
+plan_wb = load_workbook("categories.xlsx")
+finance_plan = plan_wb.active
+fact_wb = load_workbook("document.xlsx")
+finance_fact = fact_wb.active
+# warn = Label(text="Введённое значение должно быть положительным числом")
+
+def check_text(text):
+    try:
+        if int(text) > 0:
+            return int(text)
+        else:
+            return False
+    except:
+        return False
 
 def get_zero(num):
     if num < 10:
@@ -82,9 +92,19 @@ def get_statistics():
            canvas.create_text(225+100*left_percent, 70+30*i, text=(str(wasted)))
 
 def change_expences_plan(root):
-    def change_vals(entries):
+    def change_vals(entries,frame):
+        warn = Label(frame, text="")
+        warn.grid()
         for i in range(len(entries)):
-            print(entries[i].get())
+            val = check_text(entries[i].get())
+            if not val:
+                warn = Label(frame, text="Введённое значение должно быть положительным числом")
+                warn.grid()
+                return 1
+            else:
+                finance_plan.cell(row=2, column=i+1, value=val)
+            warn.grid_forget()
+        plan_wb.save("categories.xlsx")
     frame = Frame(root,background='pink', width=400, height=400)
     frame.grid(row=0, column=0, rowspan=2)
     frame.grid_propagate(0)
@@ -98,5 +118,5 @@ def change_expences_plan(root):
         entry.insert(index=0, string=all_values[i])
         entries.append(entry)
         entry.grid(row=i, column=1)
-    btn = Button(frame, text="Подтвердить", command= lambda: change_vals(entries))
+    btn = Button(frame, text="Подтвердить", command= lambda: change_vals(entries, frame))
     btn.grid(columnspan=2)

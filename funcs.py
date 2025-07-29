@@ -2,11 +2,18 @@ from datetime import date, timedelta
 from openpyxl import load_workbook
 from tkinter import *
 
+root = Tk()
+root.title("Планирование финансов")
+root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
+
 plan_wb = load_workbook("categories.xlsx")
 finance_plan = plan_wb.active
 fact_wb = load_workbook("document.xlsx")
 finance_fact = fact_wb.active
+frame1 = Frame()
 # warn = Label(text="Введённое значение должно быть положительным числом")
+
+
 
 def check_text(text):
     try:
@@ -105,6 +112,7 @@ def change_expences_plan(root):
                 finance_plan.cell(row=2, column=i+1, value=val)
             warn.grid_forget()
         plan_wb.save("categories.xlsx")
+        frame.grid_forget()
     frame = Frame(root,background='pink', width=400, height=400)
     frame.grid(row=0, column=0, rowspan=2)
     frame.grid_propagate(0)
@@ -120,3 +128,27 @@ def change_expences_plan(root):
         entry.grid(row=i, column=1)
     btn = Button(frame, text="Подтвердить", command= lambda: change_vals(entries, frame))
     btn.grid(columnspan=2)
+    btn = Button(frame, text="Отменить", command=frame.grid_forget)
+    btn.grid()
+
+def add_new_expence(root):
+    frame = Frame(root, background='pink', width=400, height=400)
+    frame.grid(row=0, column=0, rowspan=2)
+    frame.grid_propagate(0)
+    def enter_expences():
+        frame.grid_forget()
+        return 0
+    entries = []
+    for i in range((len(get_chosen_categories()[0]))):
+        label = Label(frame, text=get_chosen_categories()[0][i])
+        label.grid(row=i, column=0)
+        entry = Entry(frame)
+        entry.grid(row=i, column=1)
+        entries.append(entry)
+    btn = Button(frame, text="Подтвердить", command=enter_expences)
+    btn.grid()
+    btn = Button(frame, text="Отменить", command=frame.grid_forget)
+    btn.grid()
+    return 0
+def change_categories():
+    return 0

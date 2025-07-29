@@ -1,5 +1,4 @@
 from tkinter import *
-from tkinter import ttk
 from funcs import *
 from openpyxl import *
 
@@ -22,12 +21,12 @@ if ws.cell(1,1).value==None:
     row_num = 1
     for i in range(len(categories)):
         temp.append(IntVar())
-        ttk.Checkbutton(frame1, text=categories[i], variable=temp[i]).grid(row=row_num, column=0)
-        entry = ttk.Entry(frame1)
+        Checkbutton(frame1, text=categories[i], variable=temp[i]).grid(row=row_num, column=0)
+        entry = Entry(frame1)
         entry.grid(row=row_num, column=1)
         entries.append(entry)
         row_num += 1
-    btn = ttk.Button(frame1, text="Продолжить", command=lambda: enter_categories(temp, categories, entries, frame1))
+    btn = Button(frame1, text="Продолжить", command=lambda: enter_categories(temp, categories, entries, frame1))
     btn.grid(row=row_num, column=0)
     row_num += 1
 else:
@@ -35,8 +34,8 @@ else:
     frame1 = Frame(root, background='pink')
     frame1.grid()
     # Label(frame1, text="Rfeirihuvuo").grid(row=0, column=0)
-    btn = ttk.Button(frame1, text="Добавить новый расход")
+    btn = Button(frame1, text="Добавить новый расход", command=lambda: add_new_expence(root))
     btn.grid()
-    btn = ttk.Button(frame1, text="Изменить лимиты по расходам", command=lambda: change_expences_plan(root))
+    btn = Button(frame1, text="Изменить лимиты по расходам", command=lambda: change_expences_plan(root))
     btn.grid()
 root.mainloop()

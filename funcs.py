@@ -5,15 +5,14 @@ from tkinter import *
 root = Tk()
 root.title("Планирование финансов")
 root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
+frame1 = Frame(root, background="red")
+frame2 = Frame(root, background='pink')
+# warn = Label(text="Введённое значение должно быть положительным числом")
 
 plan_wb = load_workbook("categories.xlsx")
 finance_plan = plan_wb.active
 fact_wb = load_workbook("document.xlsx")
 finance_fact = fact_wb.active
-frame1 = Frame()
-# warn = Label(text="Введённое значение должно быть положительным числом")
-
-
 
 def check_text(text):
     try:
@@ -77,7 +76,7 @@ def get_chosen_categories():
     return [categories, values]
 
 def get_statistics():
-    canvas = Canvas(bg="white", width=350, height=300)
+    canvas = Canvas(root, bg="white", width=350, height=300)
     canvas.grid()
     canvas.create_oval(25, 10, 45, 30, fill="blue")
     canvas.create_text(50, 40, text=("Осталось"))
@@ -131,13 +130,10 @@ def change_expences_plan(root):
     btn = Button(frame, text="Отменить", command=frame.grid_forget)
     btn.grid()
 
-def add_new_expence(root):
-    frame = Frame(root, background='pink', width=400, height=400)
+def add_new_expence():
+    frame = Frame(root, background='orange', width=400, height=400)
     frame.grid(row=0, column=0, rowspan=2)
     frame.grid_propagate(0)
-    def enter_expences():
-        frame.grid_forget()
-        return 0
     entries = []
     for i in range((len(get_chosen_categories()[0]))):
         label = Label(frame, text=get_chosen_categories()[0][i])
@@ -145,6 +141,22 @@ def add_new_expence(root):
         entry = Entry(frame)
         entry.grid(row=i, column=1)
         entries.append(entry)
+    def enter_expences():
+        for i in range(len(entries)):
+            val = entries[i].get()
+            expence = check_text(val)
+            if val=="":
+                continue
+            elif not expence:
+                warn_lbl = Label(frame, text="Введённое значение должно быть положительным числом")
+                warn_lbl.grid()
+            else:
+                left = finance_fact.cell(row=i+3, column=2).value - expence
+                finance_fact.cell(row=i+3, column=2, value=left)
+                spent = finance_fact.cell(row=i+3, column=3).value + expence
+                finance_fact.cell(row=i+3, column=3, value=spent)
+        fact_wb.save("document.xlsx")
+        frame.grid_forget()
     btn = Button(frame, text="Подтвердить", command=enter_expences)
     btn.grid()
     btn = Button(frame, text="Отменить", command=frame.grid_forget)

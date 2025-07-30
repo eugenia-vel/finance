@@ -2,17 +2,9 @@ from tkinter import *
 from funcs import *
 from openpyxl import *
 
-# def addEntry(row_num):
-#     entries[row_num - 1] = ttk.Entry()
-#     entries[row_num - 1].grid(frame1, row=row_num, column=1)
-
-root = Tk()
-root.title("Планирование финансов")
-root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
 wb = load_workbook("categories.xlsx")
 ws = wb.active
 if ws.cell(1,1).value==None:
-    frame1 = Frame(root, background='pink')
     frame1.grid()
     Label(frame1, text="Выберите категории расходов: ").grid(row=0, column=0)
     categories = get_all_categories()
@@ -31,11 +23,9 @@ if ws.cell(1,1).value==None:
     row_num += 1
 else:
     get_statistics()
-    frame1 = Frame(root, background='pink')
-    frame1.grid()
-    # Label(frame1, text="Rfeirihuvuo").grid(row=0, column=0)
-    btn = Button(frame1, text="Добавить новый расход", command=lambda: add_new_expence(root))
+    frame2.grid()
+    btn = Button(frame2, text="Добавить новый расход", command=add_new_expence)
     btn.grid()
-    btn = Button(frame1, text="Изменить лимиты по расходам", command=lambda: change_expences_plan(root))
+    btn = Button(frame2, text="Изменить лимиты по расходам", command=lambda: change_expences_plan(root))
     btn.grid()
 root.mainloop()

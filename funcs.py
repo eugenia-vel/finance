@@ -157,6 +157,7 @@ def add_new_expence():
                 finance_fact.cell(row=i+3, column=3, value=spent)
         fact_wb.save("document.xlsx")
         frame.grid_forget()
+        get_statistics()
     btn = Button(frame, text="Подтвердить", command=enter_expences)
     btn.grid()
     btn = Button(frame, text="Отменить", command=frame.grid_forget)

@@ -8,6 +8,7 @@ root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenhe
 frame1 = Frame(root, background="red")
 frame2 = Frame(root, background='pink')
 # warn = Label(text="Введённое значение должно быть положительным числом")
+expence_graph = canvas = Canvas(root, bg="white", width=350, height=300)
 
 plan_wb = load_workbook("categories.xlsx")
 finance_plan = plan_wb.active
@@ -76,26 +77,29 @@ def get_chosen_categories():
     return [categories, values]
 
 def get_statistics():
-    canvas = Canvas(root, bg="white", width=350, height=300)
-    canvas.grid()
-    canvas.create_oval(25, 10, 45, 30, fill="blue")
-    canvas.create_text(50, 40, text=("Осталось"))
-    canvas.create_oval(205, 10, 225, 30, fill="red")
-    canvas.create_text(200, 40, text=("Потрачено"))
+    try:
+        expence_graph.grid_remove()
+        expence_graph.grid()
+    except:
+        expence_graph.grid()
+    expence_graph.create_oval(25, 10, 45, 30, fill="blue")
+    expence_graph.create_text(50, 40, text=("Осталось"))
+    expence_graph.create_oval(205, 10, 225, 30, fill="red")
+    expence_graph.create_text(200, 40, text=("Потрачено"))
     for i in range(len(get_chosen_categories()[0])):
         wb = load_workbook("document.xlsx")
         ws = wb.active
-        canvas.create_text(50,70+30*i, text=(ws.cell(row=i+3, column=1).value))
+        expence_graph.create_text(50,70+30*i, text=(ws.cell(row=i+3, column=1).value))
         wasted = ws.cell(row=i+3, column=3).value
         left = ws.cell(row=i+3, column=2).value
         left_percent = left/(wasted + left)
-        canvas.create_rectangle(100, 60+30*i, 100+200*left_percent, 80+30*i, fill="blue")
+        expence_graph.create_rectangle(100, 60+30*i, 100+200*left_percent, 80+30*i, fill="blue")
         if left_percent > 0.1:
-            canvas.create_text(100+100*left_percent, 70+30*i, text=(str(left)))
+            expence_graph.create_text(100+100*left_percent, 70+30*i, text=(str(left)))
         # rect_center_x = 
-        canvas.create_rectangle(100+200*left_percent, 60+30*i, 325, 80+30*i, fill="red")
+        expence_graph.create_rectangle(100+200*left_percent, 60+30*i, 325, 80+30*i, fill="red")
         if left_percent < 0.9:
-           canvas.create_text(225+100*left_percent, 70+30*i, text=(str(wasted)))
+           expence_graph.create_text(225+100*left_percent, 70+30*i, text=(str(wasted)))
 
 def change_expences_plan(root):
     def change_vals(entries,frame):

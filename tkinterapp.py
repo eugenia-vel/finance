@@ -26,6 +26,6 @@ else:
     frame2.grid()
     btn = Button(frame2, text="Добавить новый расход", command=add_new_expence)
     btn.grid()
-    btn = Button(frame2, text="Изменить лимиты по расходам", command=lambda: change_expences_plan(root))
+    btn = Button(frame2, text="Изменить лимиты по расходам", command=change_expences_plan)
     btn.grid()
 root.mainloop()

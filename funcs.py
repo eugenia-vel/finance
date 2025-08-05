@@ -7,7 +7,9 @@ root.title("Планирование финансов")
 root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
 frame1 = Frame(root, background="red")
 frame2 = Frame(root, background='pink')
-# warn = Label(text="Введённое значение должно быть положительным числом")
+add_expence_frame = Frame(root, background='blue')
+change_plan_frame = Frame(root, background='black')
+warn = Label(text="Введённое значение должно быть положительным числом")
 expence_graph = canvas = Canvas(root, bg="white", width=350, height=300)
 
 plan_wb = load_workbook("categories.xlsx")
@@ -42,7 +44,6 @@ def enter_categories(temp, categories, values, frame):
     ws = wb.active
     i = 1
     for el in range (len(temp)):
-        # print(categories[el], temp[el].get(), values[el].get())
         if temp[el].get() == 1:
             ws.cell(1, i, value=categories[el])
             val = values[el].get()
@@ -54,7 +55,6 @@ def enter_categories(temp, categories, values, frame):
                 return 1
             i += 1
     frame.destroy()
-    print("works")
     wb.save("categories.xlsx")
 
 def get_all_categories():
@@ -90,37 +90,37 @@ def get_statistics():
         wb = load_workbook("document.xlsx")
         ws = wb.active
         expence_graph.create_text(50,70+30*i, text=(ws.cell(row=i+3, column=1).value))
-        wasted = ws.cell(row=i+3, column=3).value
+        spent = ws.cell(row=i+3, column=3).value
         left = ws.cell(row=i+3, column=2).value
-        left_percent = left/(wasted + left)
+        left_percent = left/(spent + left)
+        if left_percent < 0:
+            left_percent = 0
         expence_graph.create_rectangle(100, 60+30*i, 100+200*left_percent, 80+30*i, fill="blue")
         if left_percent > 0.1:
             expence_graph.create_text(100+100*left_percent, 70+30*i, text=(str(left)))
         # rect_center_x = 
         expence_graph.create_rectangle(100+200*left_percent, 60+30*i, 325, 80+30*i, fill="red")
         if left_percent < 0.9:
-           expence_graph.create_text(225+100*left_percent, 70+30*i, text=(str(wasted)))
+           expence_graph.create_text(225+100*left_percent, 70+30*i, text=(str(spent)))
 
-def change_expences_plan(root):
-    def change_vals(entries,frame):
-        warn = Label(frame, text="")
-        warn.grid()
-        for i in range(len(entries)):
-            val = check_text(entries[i].get())
-            if not val:
-                warn = Label(frame, text="Введённое значение должно быть положительным числом")
-                warn.grid()
-                return 1
-            else:
-                finance_plan.cell(row=2, column=i+1, value=val)
+def change_expences_plan():
+    def change_vals(entries, frame):
+        try:
             warn.grid_forget()
-        plan_wb.save("categories.xlsx")
-        frame.grid_forget()
-    frame = Frame(root,background='pink', width=400, height=400)
+        finally:
+            for i in range(len(entries)):
+                val = check_text(entries[i].get())
+                if not val:
+                    warn.grid()
+                    return 1
+                else:
+                    finance_plan.cell(row=2, column=i+1, value=val)
+            plan_wb.save("categories.xlsx")
+            frame.grid_forget()
+    frame = change_plan_frame
     frame.grid(row=0, column=0, rowspan=2)
     frame.grid_propagate(0)
     [all_categories, all_values] = get_chosen_categories()
-    # print(all_values)
     entries = []
     for i in range(len(all_categories)):
         label = Label(frame, text=all_categories[i])
@@ -135,7 +135,9 @@ def change_expences_plan(root):
     btn.grid()
 
 def add_new_expence():
-    frame = Frame(root, background='orange', width=400, height=400)
+    frame2.grid_forget()
+    expence_graph.grid_forget()
+    frame = add_expence_frame
     frame.grid(row=0, column=0, rowspan=2)
     frame.grid_propagate(0)
     entries = []
@@ -154,6 +156,7 @@ def add_new_expence():
             elif not expence:
                 warn_lbl = Label(frame, text="Введённое значение должно быть положительным числом")
                 warn_lbl.grid()
+                return 0
             else:
                 left = finance_fact.cell(row=i+3, column=2).value - expence
                 finance_fact.cell(row=i+3, column=2, value=left)
@@ -161,6 +164,7 @@ def add_new_expence():
                 finance_fact.cell(row=i+3, column=3, value=spent)
         fact_wb.save("document.xlsx")
         frame.grid_forget()
+        frame2.grid(row=0, column=0, rowspan=2)
         get_statistics()
     btn = Button(frame, text="Подтвердить", command=enter_expences)
     btn.grid()

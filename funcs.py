@@ -2,15 +2,19 @@ from datetime import date, timedelta
 from openpyxl import load_workbook
 from tkinter import *
 
+# , rowspan=2
+# 
+
 root = Tk()
 root.title("Планирование финансов")
-root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
+# root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
+root.geometry("500x500+200+200")
 frame1 = Frame(root, background="red")
 frame2 = Frame(root, background='pink')
-add_expence_frame = Frame(root, background='blue')
+add_expence_frame = Frame(root, background='blue', width=300, height=300)
 change_plan_frame = Frame(root, background='black')
 warn = Label(text="Введённое значение должно быть положительным числом")
-expence_graph = canvas = Canvas(root, bg="white", width=350, height=300)
+expence_graph = Canvas(root, bg="white", width=350, height=300)
 
 plan_wb = load_workbook("categories.xlsx")
 finance_plan = plan_wb.active
@@ -102,6 +106,11 @@ def get_statistics():
         expence_graph.create_rectangle(100+200*left_percent, 60+30*i, 325, 80+30*i, fill="red")
         if left_percent < 0.9:
            expence_graph.create_text(225+100*left_percent, 70+30*i, text=(str(spent)))
+    frame2.grid()
+    btn = Button(frame2, text="Добавить новый расход", command=add_new_expence)
+    btn.grid()
+    btn = Button(frame2, text="Изменить лимиты по расходам", command=change_expences_plan)
+    btn.grid()
 
 def change_expences_plan():
     def change_vals(entries, frame):
@@ -138,7 +147,7 @@ def add_new_expence():
     frame2.grid_forget()
     expence_graph.grid_forget()
     frame = add_expence_frame
-    frame.grid(row=0, column=0, rowspan=2)
+    frame.grid(row=0, column=0)
     frame.grid_propagate(0)
     entries = []
     for i in range((len(get_chosen_categories()[0]))):
